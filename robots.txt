@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://your-age-calculator.vercel.app/sitemap.xml
+Sitemap: https://age-calculator-three-tau.vercel.app/sitemap.xml
