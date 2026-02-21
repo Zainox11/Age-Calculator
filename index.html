@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free Online Age Calculator. Calculate your exact age in years, months, days, weeks, hours, and minutes. Fast, accurate, and secure.">
+    <meta name="keywords" content="Age Calculator, Calculate Age Online, Chronological Age Calculator, Exact Age in Days, Date of Birth Calculator">
+    <title>Age Calculator Online - Exact Age in Years, Months & Days</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%85%3C/text%3E%3C/svg%3E">
+    
+    <style>
+        /* Number input ke side wale arrows hide karne ke liye */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+
+    <header class="max-w-4xl mx-auto w-full pt-12 pb-6 text-center px-4">
+        <h1 class="text-4xl md:text-5xl font-black text-blue-600 mb-4 tracking-tight">
+            <i class="fa-solid fa-hourglass-half mr-2"></i>Age Calculator
+        </h1>
+        <p class="text-gray-500 font-medium text-lg">Calculate your exact chronological age in years, months, weeks, and days.</p>
+    </header>
+
+    <main class="flex-grow max-w-3xl mx-auto w-full bg-white p-6 md:p-10 rounded-3xl shadow-xl border border-gray-100 mb-12 px-4">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Date of Birth</label>
+                <div class="flex gap-2">
+                    <select id="dobMonth" class="flex-1 p-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all text-base font-semibold text-gray-700 cursor-pointer appearance-none">
+                        <option value="0">Jan</option><option value="1">Feb</option><option value="2">Mar</option>
+                        <option value="3">Apr</option><option value="4">May</option><option value="5">Jun</option>
+                        <option value="6">Jul</option><option value="7">Aug</option><option value="8">Sep</option>
+                        <option value="9">Oct</option><option value="10">Nov</option><option value="11">Dec</option>
+                    </select>
+                    <select id="dobDay" class="w-20 p-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all text-base font-semibold text-gray-700 cursor-pointer appearance-none text-center">
+                        </select>
+                    <input type="number" id="dobYear" placeholder="YYYY" class="w-24 p-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all text-base font-semibold text-gray-700 text-center">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Age at the Date of</label>
+                <div class="flex gap-2">
+                    <select id="targetMonth" class="flex-1 p-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all text-base font-semibold text-gray-700 cursor-pointer appearance-none">
+                        <option value="0">Jan</option><option value="1">Feb</option><option value="2">Mar</option>
+                        <option value="3">Apr</option><option value="4">May</option><option value="5">Jun</option>
+                        <option value="6">Jul</option><option value="7">Aug</option><option value="8">Sep</option>
+                        <option value="9">Oct</option><option value="10">Nov</option><option value="11">Dec</option>
+                    </select>
+                    <select id="targetDay" class="w-20 p-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all text-base font-semibold text-gray-700 cursor-pointer appearance-none text-center">
+                        </select>
+                    <input type="number" id="targetYear" placeholder="YYYY" class="w-24 p-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all text-base font-semibold text-gray-700 text-center">
+                </div>
+            </div>
+
+        </div>
+
+        <button onclick="calculateAge()" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg rounded-xl shadow-lg transition-transform active:scale-[0.98] flex justify-center items-center">
+            <i class="fa-solid fa-calculator mr-2"></i> Calculate Age
+        </button>
+
+        <div id="errorBox" class="hidden mt-6 p-4 bg-red-50 text-red-600 border border-red-200 rounded-xl text-center font-bold">
+        </div>
+
+        <div id="resultSection" class="hidden mt-10 animate-fade-in">
+            <h2 class="text-center text-xl font-bold text-gray-800 mb-6 border-b pb-4">Your Exact Age Is</h2>
+            
+            <div class="grid grid-cols-3 gap-4 mb-8">
+                <div class="bg-blue-50 p-4 rounded-2xl text-center border border-blue-100">
+                    <span id="resYears" class="block text-4xl font-black text-blue-600">0</span>
+                    <span class="text-xs font-bold text-blue-400 uppercase tracking-widest">Years</span>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-2xl text-center border border-blue-100">
+                    <span id="resMonths" class="block text-4xl font-black text-blue-600">0</span>
+                    <span class="text-xs font-bold text-blue-400 uppercase tracking-widest">Months</span>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-2xl text-center border border-blue-100">
+                    <span id="resDays" class="block text-4xl font-black text-blue-600">0</span>
+                    <span class="text-xs font-bold text-blue-400 uppercase tracking-widest">Days</span>
+                </div>
+            </div>
+
+            <div class="bg-gray-900 rounded-2xl p-6 text-white shadow-inner">
+                <h3 class="text-sm font-bold text-gray-400 mb-4 border-b border-gray-700 pb-2 uppercase tracking-widest text-center">Alternative Breakdowns</h3>
+                
+                <ul class="space-y-3 text-sm font-medium">
+                    <li class="flex justify-between items-center bg-gray-800 p-3 rounded-lg">
+                        <span class="text-gray-400">Total Months</span>
+                        <span id="totalMonths" class="font-bold text-white text-lg">0</span>
+                    </li>
+                    <li class="flex justify-between items-center bg-gray-800 p-3 rounded-lg">
+                        <span class="text-gray-400">Total Weeks</span>
+                        <span id="totalWeeks" class="font-bold text-white text-lg">0</span>
+                    </li>
+                    <li class="flex justify-between items-center bg-gray-800 p-3 rounded-lg">
+                        <span class="text-gray-400">Total Days</span>
+                        <span id="totalDays" class="font-bold text-white text-lg">0</span>
+                    </li>
+                    <li class="flex justify-between items-center bg-gray-800 p-3 rounded-lg">
+                        <span class="text-gray-400">Total Hours</span>
+                        <span id="totalHours" class="font-bold text-white text-lg">0</span>
+                    </li>
+                    <li class="flex justify-between items-center bg-gray-800 p-3 rounded-lg">
+                        <span class="text-gray-400">Total Minutes</span>
+                        <span id="totalMinutes" class="font-bold text-white text-lg">0</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <section class="max-w-4xl mx-auto w-full bg-white p-8 md:p-10 rounded-2xl shadow-sm border border-gray-100 text-gray-700 leading-relaxed mb-12 px-4">
+        <h2 class="text-3xl font-extrabold text-gray-900 mb-6">Free Online Age Calculator: Find Your Exact Age</h2>
+        
+        <div class="space-y-6 text-lg">
+            <p>
+                Have you ever wondered exactly how many days, weeks, or months you have been alive? Our <strong>Online Age Calculator</strong> provides a highly accurate, chronological age breakdown. Just like the popular tools you find on the web, this calculator gives you your exact age in years, months, and days.
+            </p>
+
+            <h3 class="text-2xl font-bold text-blue-600">How Does This Chronological Age Calculator Work?</h3>
+            <p>
+                To use the tool, simply select your Date of Birth. The "Age at the Date of" field is automatically set to today's date, but you can change it to any past or future date. This is incredibly useful for finding out how old you will be on a specific milestone, or how old you were during a historical event.
+            </p>
+
+            <h3 class="text-2xl font-bold text-blue-600">Why Use Our Tool?</h3>
+            <ul class="list-disc pl-6 space-y-3">
+                <li><strong>Deep Breakdown:</strong> We don't just stop at years. We show your total months, total weeks, total days, hours, and minutes.</li>
+                <li><strong>100% Client-Side Privacy:</strong> Your date of birth is sensitive information. Our calculator processes the data entirely within your browser. No data is ever sent to a server.</li>
+                <li><strong>Fast and Accurate:</strong> Our algorithm correctly accounts for leap years and varying month lengths to give you precise results instantly.</li>
+            </ul>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-gray-300 py-10 mt-auto">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h3 class="text-2xl font-bold text-white mb-6 flex items-center justify-center">
+                <i class="fa-solid fa-hourglass-half text-blue-500 mr-2"></i>Age Calculator
+            </h3>
+            
+            <div class="flex flex-wrap justify-center gap-6 mb-8 text-sm font-semibold whitespace-nowrap">
+                <a href="about.html" class="hover:text-blue-400 transition-colors">About Us</a>
+                <a href="privacy.html" class="hover:text-blue-400 transition-colors">Privacy Policy</a>
+                <a href="terms.html" class="hover:text-blue-400 transition-colors">Terms of Service</a>
+                <a href="contact.html" class="hover:text-blue-400 transition-colors">Contact Us</a>
+            </div>
+
+            <div class="border-t border-gray-800 pt-6 text-sm text-gray-500 flex flex-col md:flex-row justify-between items-center">
+                <p>&copy; 2026 Online Age Calculator. All rights reserved.</p>
+                <p class="mt-2 md:mt-0">Built with ❤️ for Web Utility</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Page load hotay hi days 1-31 populate karna aur current date set karna
+        window.onload = function() {
+            const dobDaySelect = document.getElementById('dobDay');
+            const targetDaySelect = document.getElementById('targetDay');
+            
+            // Populate Days 1 to 31
+            for (let i = 1; i <= 31; i++) {
+                dobDaySelect.innerHTML += `<option value="${i}">${i}</option>`;
+                targetDaySelect.innerHTML += `<option value="${i}">${i}</option>`;
+            }
+
+            // Set Target Date to Today's Date
+            const today = new Date();
+            document.getElementById('targetMonth').value = today.getMonth(); // 0-11
+            document.getElementById('targetDay').value = today.getDate(); // 1-31
+            document.getElementById('targetYear').value = today.getFullYear(); // YYYY
+        };
+
+        function calculateAge() {
+            const errorBox = document.getElementById('errorBox');
+            const resultSection = document.getElementById('resultSection');
+
+            // Reset UI
+            errorBox.classList.add('hidden');
+            resultSection.classList.add('hidden');
+
+            // Get DOB Values
+            const m1 = parseInt(document.getElementById('dobMonth').value);
+            const d1 = parseInt(document.getElementById('dobDay').value);
+            const y1 = parseInt(document.getElementById('dobYear').value);
+
+            // Get Target Values
+            const m2 = parseInt(document.getElementById('targetMonth').value);
+            const d2 = parseInt(document.getElementById('targetDay').value);
+            const y2 = parseInt(document.getElementById('targetYear').value);
+
+            // Validation checks
+            if (isNaN(y1) || isNaN(y2) || y1.toString().length < 4 || y2.toString().length < 4) {
+                errorBox.innerText = "Please enter a valid 4-digit Year (e.g., 1995).";
+                errorBox.classList.remove('hidden');
+                return;
+            }
+
+            // Create Date Objects
+            const dob = new Date(y1, m1, d1);
+            const target = new Date(y2, m2, d2);
+
+            // Check if invalid date (e.g. Feb 31)
+            if (dob.getMonth() !== m1 || target.getMonth() !== m2) {
+                errorBox.innerText = "Invalid date selected (e.g., February 31). Please check the days.";
+                errorBox.classList.remove('hidden');
+                return;
+            }
+
+            if (dob > target) {
+                errorBox.innerText = "Date of Birth cannot be after the Target Date.";
+                errorBox.classList.remove('hidden');
+                return;
+            }
+
+            // Calculate Years, Months, Days precisely
+            let years = target.getFullYear() - dob.getFullYear();
+            let months = target.getMonth() - dob.getMonth();
+            let days = target.getDate() - dob.getDate();
+
+            if (days < 0) {
+                months--;
+                // Get days of the previous month
+                const prevMonth = new Date(target.getFullYear(), target.getMonth(), 0);
+                days += prevMonth.getDate();
+            }
+
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            // Calculate Totals (Alternative Breakdown)
+            const diffTime = Math.abs(target - dob);
+            const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const totalWeeks = Math.floor(totalDays / 7);
+            const totalMonths = (years * 12) + months;
+            const totalHours = totalDays * 24;
+            const totalMinutes = totalHours * 60;
+
+            // Update UI
+            document.getElementById('resYears').innerText = years;
+            document.getElementById('resMonths').innerText = months;
+            document.getElementById('resDays').innerText = days;
+
+            document.getElementById('totalMonths').innerText = totalMonths.toLocaleString();
+            document.getElementById('totalWeeks').innerText = totalWeeks.toLocaleString();
+            document.getElementById('totalDays').innerText = totalDays.toLocaleString();
+            document.getElementById('totalHours').innerText = totalHours.toLocaleString();
+            document.getElementById('totalMinutes').innerText = totalMinutes.toLocaleString();
+
+            resultSection.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
